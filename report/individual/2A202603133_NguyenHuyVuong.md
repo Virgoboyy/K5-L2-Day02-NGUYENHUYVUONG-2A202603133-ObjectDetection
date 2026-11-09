@@ -30,7 +30,7 @@ Dẫn tới [GUIDELINE_MINI.md](../../GUIDELINE_MINI.md) (bản nháp chi tiết
   + Mô hình pretrained ban đầu trên COCO chưa có nhãn `van` riêng biệt. Tiến hành rà soát các ảnh có minivan/xe van dáng hộp (như ở `drive_005`) để phân biệt rõ giữa `car`, `truck` nhỏ và `van`.
   + Với các xe bị cắt mép khung hình (truncation) như ở `drive_020`, `drive_033`, rà soát đảm bảo tọa độ box chạm sát mép ảnh [0, 1] và không vẽ đoán ra ngoài.
   + Với các xe ở quá xa, mờ nhòe ở hậu cảnh, tiến hành lọc bỏ để tránh sinh ra False Positive (FP).
-- Commit khóa nhãn ban đầu: [Sẽ cập nhật git commit hash sau khi commit]
+- Commit khóa nhãn ban đầu: `9b102ca` (feat: complete CP1 guideline and CP2/CP3 initial train annotations for 50 images)
 
 ## 4. Gold QC và rework
 
