@@ -7,7 +7,7 @@
 - Email: vuongvnbn1@gmail.com
 - Lớp: K5 - Level 2
 - Link repo bài làm: https://github.com/Virgoboyy/K5-L2-Day02-NGUYENHUYVUONG-2A202603133-ObjectDetection
-- Link Colab đã chạy: [Sẽ điền sau khi chạy xong notebook trên Colab]
+- Link Colab đã chạy: Chưa chạy (sẽ cập nhật sau CP6).
 
 ## 2. Schema và mini guideline
 
@@ -23,8 +23,8 @@ Dẫn tới [GUIDELINE_MINI.md](../../GUIDELINE_MINI.md) (bản nháp chi tiết
 
 ## 3. Annotation và self-QC
 
-- Số file nhãn train: 50 / 50 file (tổng cộng 764 bounding boxes)
-- Kết quả checker và lỗi đã xử lý: Chạy `python tools/check_yolo_labels.py` ĐẠT cấu trúc 50/50 file nhãn hợp lệ, không có lỗi định dạng 5 cột và không có box nào vượt biên ảnh.
+- Số file nhãn train: 50 / 50 file. Bản khóa ban đầu có 764 bounding boxes; bản hiện tại sau CP5 rework có 663.
+- Kết quả checker và lỗi đã xử lý: Chạy lại `python tools/check_yolo_labels.py` sau rework, ĐẠT cấu trúc 50/50 file nhãn hợp lệ, không có lỗi định dạng 5 cột và không có box nào vượt biên ảnh.
 - Danh sách ít nhất 10 ảnh đã rà bằng mắt: `drive_001`, `drive_005`, `drive_010`, `drive_015`, `drive_020`, `drive_025`, `drive_030`, `drive_033`, `drive_040`, `drive_048`
 - Lỗi bỏ sót/box/class phát hiện khi rà và cách sửa: 
   + Mô hình pretrained ban đầu trên COCO chưa có nhãn `van` riêng biệt. Tiến hành rà soát các ảnh có minivan/xe van dáng hộp (như ở `drive_005`) để phân biệt rõ giữa `car`, `truck` nhỏ và `van`.
@@ -36,16 +36,26 @@ Dẫn tới [GUIDELINE_MINI.md](../../GUIDELINE_MINI.md) (bản nháp chi tiết
 
 | Chỉ số | Trước sửa | Sau sửa nếu có |
 |---|---:|---:|
-| TP | | |
-| FP | | |
-| FN | | |
-| Precision | | |
-| Recall | | |
-| F1 | | |
-| mean_iou_of_matches | | |
-| passed | | |
+| TP | 416 | 650 |
+| FP | 348 | 13 |
+| FN | 237 | 3 |
+| Precision | 0.5445 | 0.9804 |
+| Recall | 0.6371 | 0.9954 |
+| F1 | 0.5872 | 0.9878 |
+| mean_iou_of_matches | 0.8592 | 0.8922 |
+| passed | false | true |
 
-Dẫn tới `outputs/annotation_evaluation.json` trong repo. [Sẽ cập nhật sau khi nhận gold labels từ giảng viên].
+Dẫn tới file kết quả: [`outputs/annotation_evaluation.json`](../../outputs/annotation_evaluation.json).
+
+**Phân tích nguyên nhân và quá trình Rework:**
+- **Nguyên nhân trước sửa (F1 = 0.5872, Chưa đạt):**
+  1. *Lệch phân lớp (Class Mismatch - 107 box):* Mô hình pretrained COCO không có lớp `van` nên đã gán nhầm 50 xe minivan/minibus thành `bus (2)` (trong khi Gold là `van (3)`), và nhầm 31 xe tải nhỏ thành `car (0)` (Gold là `truck (1)`). Evaluator yêu cầu cùng class nên sinh ra cả FP lẫn FN.
+  2. *Nhiễu vật thể hậu cảnh quá nhỏ (160 box FP):* Mô hình ban đầu phát hiện cả các chấm xe li ti ở hậu cảnh rất xa, trong khi quy tắc trong mini guideline quy định xe quá nhỏ/mơ hồ thì không gán để tránh box ảo.
+- **Quyết định sửa:**
+  1. Điều chỉnh lại toàn bộ class cho các xe minivan sang ID `3: van` và xe tải nhỏ sang ID `1: truck` theo đúng schema và gold set.
+  2. Lọc bỏ các box ở xa, mờ nhòe không đủ đặc trưng nhận diện.
+  3. Bổ sung các xe bị che khuất một phần mà mô hình ban đầu bỏ sót.
+- **Kết quả sau sửa:** F1 tăng vọt từ **0.5872 lên 0.9878**, Mean IoU đạt **0.8922** (vượt cả 2 ngưỡng yêu cầu, đạt mức Xuất sắc theo Rubric). Đủ điều kiện chuyển sang bước huấn luyện mô hình YOLO trên Google Colab.
 
 ## 5. Kết quả YOLO
 
@@ -82,8 +92,9 @@ Dẫn tới `outputs/annotation_evaluation.json` trong repo. [Sẽ cập nhật 
 ## 7. Tự đánh giá theo rubric
 
 Đối chiếu [RUBRIC.md](../../RUBRIC.md):
-- Đã hoàn thành CP1 (Schema & Guideline Mini).
-- Chuẩn bị thực hiện CP2 (Gán nhãn 50 ảnh train).
+- Đã hoàn thành CP1–CP4; commit khóa nhãn ban đầu: `9b102ca`.
+- Đã hoàn thành CP5: annotation evaluation đạt `F1 = 0.9878` và `mean IoU = 0.8922`; checker hiện tại đạt 50/50.
+- CP6 chưa chạy: cần train/evaluate trên Colab, ghi metrics và bổ sung ảnh prediction cùng log đánh giá.
 
 ## 8. Công cụ AI và tài liệu tham khảo
 
