@@ -8,6 +8,7 @@ gold_train_labels.zip
 # Kết quả local/Colab không mặc định đưa lên Git; nộp theo hướng dẫn giảng viên.
 outputs/
 *.zip
+*.rar
 # Không commit checkpoint .pt, kể cả khi nằm trong report/individual/assets.
 *.pt
 __pycache__/
