@@ -7,7 +7,7 @@
 - Email: vuongvnbn1@gmail.com
 - Lớp: K5 - Level 2
 - Link repo bài làm: https://github.com/Virgoboyy/K5-L2-Day02-NGUYENHUYVUONG-2A202603133-ObjectDetection
-- Link Colab đã chạy: Chưa chạy (sẽ cập nhật sau CP6).
+- Link Colab đã chạy: https://colab.research.google.com/drive/1UzmXKZgClUyekQzHMVOidNWQJmiOrNdI
 
 ## 2. Schema và mini guideline
 
@@ -59,27 +59,28 @@ Dẫn tới file kết quả: [`outputs/annotation_evaluation.json`](../../outpu
 
 ## 5. Kết quả YOLO
 
-- Runtime, GPU/CPU, phiên bản Ultralytics và Torch:
-- Các tham số thay đổi so với notebook nếu có và lý do:
-- Đường dẫn best checkpoint trong phiên chạy:
+- Runtime: Google Colab, GPU device `0`. Tên GPU và phiên bản Ultralytics/Torch không có trong ZIP kết quả.
+- Tham số theo notebook: YOLO26n, 50 epochs, `imgsz=640`, `batch=-1`, seed `20260909`; không ghi nhận thay đổi.
+- Đường dẫn best checkpoint trong phiên chạy: `/content/Day2-Lab/outputs/yolo26_runs/vehicle_annotation/weights/best.pt` (không đưa checkpoint `.pt` vào repo).
 
 | Chỉ số trên 10 ảnh eval | Giá trị |
 |---|---:|
-| Precision | |
-| Recall | |
-| mAP50 | |
-| mAP50–95 | |
+| Precision | 0.5628 |
+| Recall | 0.4245 |
+| mAP50 | 0.4916 |
+| mAP50–95 | 0.3132 |
 
-*Đường dẫn ảnh/assets minh họa:* `assets/eval_predictions/visuals/` và `assets/yolo26_runs/`.
+*Đường dẫn ảnh/assets minh họa:* [`assets/eval_predictions/visuals/`](assets/eval_predictions/visuals/) (10 ảnh), [`assets/yolo26_runs/`](assets/yolo26_runs/) và [`model_eval_metrics.json`](assets/model_eval_metrics.json).
 
 **Trả lời bốn câu hỏi cuối notebook:**
 
 1. *Lớp nào recall thấp nhất? Ảnh nào minh họa?*
-   - [Sẽ trả lời sau khi chạy notebook Colab]
+   - `bus` thấp nhất, recall `0.00` (0/2) theo [confusion matrix chuẩn hóa](assets/yolo26_runs/vehicle_eval/confusion_matrix_normalized.png). [`drive_051.jpg`](assets/eval_predictions/visuals/drive_051.jpg) minh họa xe buýt nhỏ ở góc trên bên phải bị bỏ sót trong ảnh dự đoán.
 2. *Nếu mAP50 cao nhưng mAP50–95 thấp, cần kiểm điều gì trên box?*
-   - Cần kiểm tra độ bám sát (tightness) của bounding box. mAP50 cao tức là mô hình tìm đúng vị trí xe, nhưng mAP50-95 thấp chứng tỏ viền box vẽ chưa sát mép thân xe (bị thừa lề đường, lấn xe khác hoặc hụt bánh xe), khiến IoU giảm khi tăng ngưỡng đánh giá từ 0.50 lên 0.95.
+   - Cần kiểm tra độ bám sát (tightness) của bounding box. mAP50 cao tức là mô hình tìm đúng vị trí xe, nhưng mAP50-95 thấp chứng tỏ viền box vẽ chưa sát mép thân xe (bị thừa lề đường, lấn xe khác hoặc hụt bánh xe), khiến IoU giảm khi tăng ngưỡng đánh giá từ 0.50 lên 0.95. Ở lần chạy này, mAP50 là `0.4916` và mAP50–95 là `0.3132`.
 3. *Lỗi class nào có thể liên quan guideline? Dữ kiện nào hỗ trợ nhận xét?*
    - Dễ nhầm nhất giữa `car` và `van` (hoặc `car` bán tải với `truck` nhỏ). Nếu guideline không phân biệt rõ xe dáng hộp (van) với SUV/crossover, cả người gán lẫn mô hình sẽ bị phân vân. Ma trận nhầm lẫn (confusion matrix) giữa `car` và `van` sẽ thể hiện rõ điều này.
+   - Dữ kiện lần chạy: confusion matrix chuẩn hóa ghi nhận `truck` recall `0.40`, trong đó `0.60` đối tượng thật thuộc `truck` được dự đoán thành `car`; lớp `bus` cũng bị dự đoán thành `van` ở mức `0.50`.
 4. *Vì sao không dùng 10 ảnh eval để train? Vai trò validation của chúng trong notebook là gì?*
    - Không đưa 10 ảnh eval vào train để tránh rò rỉ dữ liệu (data leakage) và học vẹt (overfitting). Trong notebook, 10 ảnh này đóng vai trò validation set để kiểm tra khả năng nhận diện trên ảnh mới sau mỗi epoch và chọn ra checkpoint tốt nhất (`best.pt`).
 
@@ -94,10 +95,10 @@ Dẫn tới file kết quả: [`outputs/annotation_evaluation.json`](../../outpu
 Đối chiếu [RUBRIC.md](../../RUBRIC.md):
 - Đã hoàn thành CP1–CP4; commit khóa nhãn ban đầu: `9b102ca`.
 - Đã hoàn thành CP5: annotation evaluation đạt `F1 = 0.9878` và `mean IoU = 0.8922`; checker hiện tại đạt 50/50.
-- CP6 chưa chạy: cần train/evaluate trên Colab, ghi metrics và bổ sung ảnh prediction cùng log đánh giá.
+- Đã chạy CP6 trên Colab; ghi nhận metrics và bổ sung 10 ảnh prediction cùng log train/eval. Tên GPU và phiên bản thư viện chưa có trong ZIP kết quả.
 
 ## 8. Công cụ AI và tài liệu tham khảo
 
-- Công cụ hỗ trợ: Antigravity AI Assistant hỗ trợ rà soát schema, đọc hiểu cấu trúc quy định và lập mẫu báo cáo.
+- Công cụ hỗ trợ: Antigravity AI Assistant hỗ trợ rà soát schema, đọc hiểu cấu trúc quy định và lập mẫu báo cáo; OpenAI Codex hỗ trợ kiểm tra gói kết quả Colab, trích xuất metrics và sắp xếp assets. Học viên tự kiểm tra nội dung phân tích trước khi nộp.
 - Tự kiểm tra: Toàn bộ quyết định phân lớp, kiểm tra box trên ảnh đều được rà soát trực tiếp trên ảnh trong tập train.
 - Tài liệu tham khảo: Tài liệu hướng dẫn lab Day 2 (`GUIDE.md`, `RULES.md`, `CHECKPOINTS.md`, `RUBRIC.md`, `SUBMISSION.md`).
