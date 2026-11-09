@@ -59,7 +59,7 @@ Dẫn tới file kết quả: [`outputs/annotation_evaluation.json`](../../outpu
 
 ## 5. Kết quả YOLO
 
-- Runtime: Google Colab, GPU device `0`. Tên GPU và phiên bản Ultralytics/Torch không có trong ZIP kết quả.
+- Runtime: Google Colab, GPU Tesla T4; Torch `2.14.1+cu130`; Ultralytics `8.4.208`.
 - Tham số theo notebook: YOLO26n, 50 epochs, `imgsz=640`, `batch=-1`, seed `20260909`; không ghi nhận thay đổi.
 - Đường dẫn best checkpoint trong phiên chạy: `/content/Day2-Lab/outputs/yolo26_runs/vehicle_annotation/weights/best.pt` (không đưa checkpoint `.pt` vào repo).
 
@@ -94,7 +94,7 @@ Dẫn tới file kết quả: [`outputs/annotation_evaluation.json`](../../outpu
 Đối chiếu [RUBRIC.md](../../RUBRIC.md):
 - Đã hoàn thành CP1–CP4; commit khóa nhãn ban đầu: `9b102ca`.
 - Đã hoàn thành CP5: annotation evaluation đạt `F1 = 0.9878` và `mean IoU = 0.8922`; checker hiện tại đạt 50/50.
-- Đã chạy CP6 trên Colab; ghi nhận metrics và bổ sung 10 ảnh prediction cùng log train/eval. Tên GPU và phiên bản thư viện chưa có trong ZIP kết quả.
+- Đã chạy CP6 trên Colab; ghi nhận metrics, runtime và bổ sung 10 ảnh prediction cùng log train/eval.
 
 ## 8. Công cụ AI và tài liệu tham khảo
 
