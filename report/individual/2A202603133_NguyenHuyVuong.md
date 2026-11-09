@@ -79,8 +79,7 @@ Dẫn tới file kết quả: [`outputs/annotation_evaluation.json`](../../outpu
 2. *Nếu mAP50 cao nhưng mAP50–95 thấp, cần kiểm điều gì trên box?*
    - Cần kiểm tra độ bám sát (tightness) của bounding box. mAP50 cao tức là mô hình tìm đúng vị trí xe, nhưng mAP50-95 thấp chứng tỏ viền box vẽ chưa sát mép thân xe (bị thừa lề đường, lấn xe khác hoặc hụt bánh xe), khiến IoU giảm khi tăng ngưỡng đánh giá từ 0.50 lên 0.95. Ở lần chạy này, mAP50 là `0.4916` và mAP50–95 là `0.3132`.
 3. *Lỗi class nào có thể liên quan guideline? Dữ kiện nào hỗ trợ nhận xét?*
-   - Dễ nhầm nhất giữa `car` và `van` (hoặc `car` bán tải với `truck` nhỏ). Nếu guideline không phân biệt rõ xe dáng hộp (van) với SUV/crossover, cả người gán lẫn mô hình sẽ bị phân vân. Ma trận nhầm lẫn (confusion matrix) giữa `car` và `van` sẽ thể hiện rõ điều này.
-   - Dữ kiện lần chạy: confusion matrix chuẩn hóa ghi nhận `truck` recall `0.40`, trong đó `0.60` đối tượng thật thuộc `truck` được dự đoán thành `car`; lớp `bus` cũng bị dự đoán thành `van` ở mức `0.50`.
+   - Dữ kiện để đối chiếu với guideline: confusion matrix chuẩn hóa ghi nhận `truck` recall `0.40`, trong đó `0.60` đối tượng thật thuộc `truck` được dự đoán thành `car`; `0.50` đối tượng thật thuộc `bus` được dự đoán thành `van`; chiều nhầm `car` thành `van` là `0.03`. Cần học viên tự chốt nhận định nguyên nhân sau khi rà các ví dụ ảnh và định nghĩa lớp trong mini guideline.
 4. *Vì sao không dùng 10 ảnh eval để train? Vai trò validation của chúng trong notebook là gì?*
    - Không đưa 10 ảnh eval vào train để tránh rò rỉ dữ liệu (data leakage) và học vẹt (overfitting). Trong notebook, 10 ảnh này đóng vai trò validation set để kiểm tra khả năng nhận diện trên ảnh mới sau mỗi epoch và chọn ra checkpoint tốt nhất (`best.pt`).
 
