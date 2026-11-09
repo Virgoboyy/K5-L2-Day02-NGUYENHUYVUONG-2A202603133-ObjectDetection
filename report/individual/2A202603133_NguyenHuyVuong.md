@@ -79,7 +79,7 @@ Dẫn tới file kết quả: [`outputs/annotation_evaluation.json`](../../outpu
 2. *Nếu mAP50 cao nhưng mAP50–95 thấp, cần kiểm điều gì trên box?*
    - Cần kiểm tra độ bám sát (tightness) của bounding box. mAP50 cao tức là mô hình tìm đúng vị trí xe, nhưng mAP50-95 thấp chứng tỏ viền box vẽ chưa sát mép thân xe (bị thừa lề đường, lấn xe khác hoặc hụt bánh xe), khiến IoU giảm khi tăng ngưỡng đánh giá từ 0.50 lên 0.95. Ở lần chạy này, mAP50 là `0.4916` và mAP50–95 là `0.3132`.
 3. *Lỗi class nào có thể liên quan guideline? Dữ kiện nào hỗ trợ nhận xét?*
-   - Dữ kiện để đối chiếu với guideline: confusion matrix chuẩn hóa ghi nhận `truck` recall `0.40`, trong đó `0.60` đối tượng thật thuộc `truck` được dự đoán thành `car`; `0.50` đối tượng thật thuộc `bus` được dự đoán thành `van`; chiều nhầm `car` thành `van` là `0.03`. Cần học viên tự chốt nhận định nguyên nhân sau khi rà các ví dụ ảnh và định nghĩa lớp trong mini guideline.
+   - Nhận định: ranh giới `truck`/`car`, nhất là xe tải nhỏ và bán tải, là phần guideline nên rà trước. Confusion matrix cho thấy `3/5` xe thật thuộc `truck` bị dự đoán thành `car`, còn `2/5` được nhận đúng; nhầm trực tiếp `car` thành `van` chỉ `3%`. Điều này khớp với quy tắc phân biệt bán tải thuộc `car` và xe tải chở hàng thuộc `truck`. Đây là dấu hiệu cần rà lại, chưa đủ kết luận guideline sai vì eval chỉ có 5 mẫu `truck` và góc nhìn/kích thước xe cũng có thể ảnh hưởng.
 4. *Vì sao không dùng 10 ảnh eval để train? Vai trò validation của chúng trong notebook là gì?*
    - Không đưa 10 ảnh eval vào train để tránh rò rỉ dữ liệu (data leakage) và học vẹt (overfitting). Trong notebook, 10 ảnh này đóng vai trò validation set để kiểm tra khả năng nhận diện trên ảnh mới sau mỗi epoch và chọn ra checkpoint tốt nhất (`best.pt`).
 
@@ -98,6 +98,6 @@ Dẫn tới file kết quả: [`outputs/annotation_evaluation.json`](../../outpu
 
 ## 8. Công cụ AI và tài liệu tham khảo
 
-- Công cụ hỗ trợ: Antigravity AI Assistant hỗ trợ rà soát schema, đọc hiểu cấu trúc quy định và lập mẫu báo cáo; OpenAI Codex hỗ trợ kiểm tra gói kết quả Colab, trích xuất metrics và sắp xếp assets. Học viên tự kiểm tra nội dung phân tích trước khi nộp.
+- Công cụ hỗ trợ: Antigravity AI Assistant hỗ trợ rà soát schema, đọc hiểu cấu trúc quy định và lập mẫu báo cáo; OpenAI Codex hỗ trợ kiểm tra gói kết quả Colab, trích xuất metrics, sắp xếp assets và đọc confusion matrix để đề xuất nhận định Q3. Học viên tự kiểm tra nội dung phân tích trước khi nộp.
 - Tự kiểm tra: Toàn bộ quyết định phân lớp, kiểm tra box trên ảnh đều được rà soát trực tiếp trên ảnh trong tập train.
 - Tài liệu tham khảo: Tài liệu hướng dẫn lab Day 2 (`GUIDE.md`, `RULES.md`, `CHECKPOINTS.md`, `RUBRIC.md`, `SUBMISSION.md`).
